@@ -70,19 +70,14 @@ builder.Services.AddScoped<ChatBackendService>();
 // --- Configure CORS ---
 builder.Services.AddCors(options =>
 {
-    options.AddDefaultPolicy(
-        policy =>
-        {
-            policy.WithOrigins("http://localhost:4200")
-                .AllowAnyHeader()
-                .AllowAnyMethod();
-            policy.WithOrigins("https://abdalla-elkilany.netlify.app")
-               .AllowAnyHeader()
-               .AllowAnyMethod();
-        });
-
-
+    options.AddPolicy("AllowNetlifyFrontend",
+        policy => policy
+            .WithOrigins("https://abdalla-elkilany.netlify.app")
+            .AllowAnyHeader()
+            .AllowAnyMethod());
 });
+
+
 
 var app = builder.Build();
 
@@ -114,9 +109,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseRouting();   
 app.UseHttpsRedirection();
-app.UseCors();
+app.UseCors("AllowNetlifyFrontend");
 app.UseAuthorization();
 app.MapControllers();
 
